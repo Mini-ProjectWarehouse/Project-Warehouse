@@ -33,9 +33,9 @@ body {
 
 .go-back-btn {
   background-color: transparent;
-  color: #4da3ff;
+  color: black;
   border: 2px solid #4da3ff;
-  padding: 14px 24px;
+  padding: 8px 16px;
   font-size: 18px;
   border-radius: 8px;
   cursor: pointer;
@@ -44,6 +44,7 @@ body {
   text-decoration: none;
   display: inline-block;
   text-align: center;
+  user-select: none;
 }
 
 .go-back-btn:hover {
@@ -191,6 +192,7 @@ body {
     object-fit: cover;
     position: relative;
     z-index: 1;
+    user-select: none;
 }
 
 body.dark-mode {
@@ -214,7 +216,7 @@ body.dark-mode .go-back-btn {
 }
 
 body.dark-mode .go-back-btn:hover {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: #4da3ff;;
 }
 
 body.dark-mode .contact-left-title h2 {

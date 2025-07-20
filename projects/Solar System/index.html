@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Solar System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nova+Cut&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
+<link rel=stylesheet href="style.css">
+<link rel="icon" href="../images/Logo-modified.png">
+</head>
+<body>
+  <div class="sidebar-buttons">
+    <button class="planet-btn" data-planet="sun">Sun</button>
+    <button class="planet-btn" data-planet="mercury">Mercury</button>
+    <button class="planet-btn" data-planet="venus">Venus</button>
+    <div class="earth-group">
+      <button class="planet-btn" data-planet="earth">Earth</button>
+      <button class="moon-btn" data-planet="moon">Moon</button>
+    </div>
+    <button class="planet-btn" data-planet="mars">Mars</button>
+    <button class="planet-btn" data-planet="jupiter">Jupiter</button>
+    <button class="planet-btn" data-planet="saturn">Saturn</button>
+    <button class="planet-btn" data-planet="uranus">Uranus</button>
+    <button class="planet-btn" data-planet="neptune">Neptune</button>
+    <button class="planet-btn" data-planet="pluto">Pluto</button>
+  </div>
+  <div class="sidebar" id="sidebar">
+    <button id="close-sidebar">&times;</button>
+    <div id="sidebar-content">
+      <!-- Planet info will be loaded here -->
+    </div>
+  </div>
+  <div class="container">
+    <div class="sun">
+      <img src="./images/sun.png" alt="sun">
+    </div>
+    <div class="mercury"></div>
+    <div class="venus"></div>
+    <div class="earth">
+      <div class="moon"></div>
+    </div>
+    <div class="mars"></div>
+    <div class="jupiter"></div>
+    <div class="saturn"></div>
+    <div class="uranus"></div>
+    <div class="neptune"></div>
+    <div class="pluto">
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+
+</html>

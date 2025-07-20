@@ -31,8 +31,7 @@ h1 {
 .ludo {
     height: 450px;
     width: 100%;
-    /* IMPORTANT: You might need a new ludo-bg.jpg for 4 players */
-    background-image: url('./istockphoto-493120080-1024x1024.jpg');
+    background-image: url('images/ludo.jpg');
     background-size: cover;
     background-position: center;
     position: relative;
@@ -82,7 +81,7 @@ h1 {
 }
 
 [player-id="P2"].player-piece { /* Green */
-    background-color: #00b550;
+    background-color: #03cb5d;
     border-color: #049645;
 }
 
@@ -92,8 +91,8 @@ h1 {
 }
 
 [player-id="P4"].player-piece { /* Yellow */
-    background-color: #ffcc00;
-    border-color: #e6b800;
+    background-color: #e1b503;
+    border-color: #a38304;
 }
 
 
