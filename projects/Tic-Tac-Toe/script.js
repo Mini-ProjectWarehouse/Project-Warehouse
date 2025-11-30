@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Initialize the game state
   let board = ['', '', '', '', '', '', '', '', '']; // Empty board
-  let currentPlayer = 'O'; // First player is always 'O'
+  let currentPlayer = 'O'; // Human player starts
   let isGameActive = true; // The game starts as active
 
   // All possible winning combinations (rows, columns, diagonals)
@@ -25,50 +25,42 @@ document.addEventListener('DOMContentLoaded', () => {
     [2, 4, 6]  // Diagonal 2
   ];
 
-  // Function to handle when a player clicks on a cell
+  // Function to mark the cell
   function handleCellPlayed(clickedCell, clickedIndex) {
-    board[clickedIndex] = currentPlayer; // Mark the cell in the board array
-    clickedCell.textContent = currentPlayer; // Show X or O in the cell
-    clickedCell.classList.add('disabled'); // Prevent clicking on the same cell again
+    board[clickedIndex] = currentPlayer;
+    clickedCell.textContent = currentPlayer;
+    clickedCell.classList.add('disabled');
   }
 
-  // Function to change the turn between players
+  // Change turn
   function handlePlayerChange() {
-    // If current player is X, switch to O; otherwise switch to X
     currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
-    status.textContent = `Player ${currentPlayer}'s turn`; // Update the status text
+    status.textContent = `Player ${currentPlayer}'s turn`;
   }
 
-  // Function to check if someone won or it's a draw
+  // Check winner or draw
   function handleResultValidation() {
     let roundWon = false;
 
-    // Loop through all winning combinations
     for (let i = 0; i < winningConditions.length; i++) {
-      const winCondition = winningConditions[i];
-      const a = board[winCondition[0]];
-      const b = board[winCondition[1]];
-      const c = board[winCondition[2]];
+      const [aIndex, bIndex, cIndex] = winningConditions[i];
+      const a = board[aIndex];
+      const b = board[bIndex];
+      const c = board[cIndex];
 
-      // If any cell in the combination is empty, continue checking
-      if (a === '' || b === '' || c === '') {
-        continue;
-      }
+      if (a === '' || b === '' || c === '') continue;
 
-      // If all 3 cells are equal, we have a winner
       if (a === b && b === c) {
         roundWon = true;
         break;
       }
     }
 
-    // If someone won, show message and end the game
     if (roundWon) {
       isGameActive = false;
       const boardElement = document.getElementById('board');
       const winnerMessage = document.getElementById('winnerMessage');
 
-      // Animate board disappearing
       boardElement.classList.add('fade-out');
       boardElement.addEventListener('animationend', () => {
         boardElement.style.display = 'none';
@@ -79,41 +71,87 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // If no one won and board is full -> draw
     if (!board.includes('')) {
       status.textContent = `Game ended in a draw!`;
       isGameActive = false;
       return;
     }
 
-    // If no win or draw, change to next player
     handlePlayerChange();
   }
 
-  // When user clicks on any cell
-  function handleCellClick(event) {
-    const clickedCell = event.target; // Which cell was clicked
-    const clickedIndex = parseInt(clickedCell.getAttribute('data-index')); // Get index from cell
+  // --------------------------
+  // BASIC AI FOR PLAYER X
+  // --------------------------
+  function aiMove() {
+    if (!isGameActive) return;
+    if (currentPlayer !== 'X') return;
 
-    // If cell is already filled or game is over, do nothing
-    if (board[clickedIndex] !== '' || !isGameActive) {
-      return;
+    let aiIndex = -1;
+
+    // 1. AI tries to win
+    for (let i = 0; i < winningConditions.length; i++) {
+      const [a, b, c] = winningConditions[i];
+
+      if (board[a] === 'X' && board[b] === 'X' && board[c] === '') aiIndex = c;
+      else if (board[a] === 'X' && board[b] === '' && board[c] === 'X') aiIndex = b;
+      else if (board[a] === '' && board[b] === 'X' && board[c] === 'X') aiIndex = a;
+
+      if (aiIndex !== -1) break;
     }
 
-    clickSound.play(); // Play click sound
-    handleCellPlayed(clickedCell, clickedIndex); // Mark cell
-    handleResultValidation(); // Check win/draw
+    // 2. Block player O from winning
+    if (aiIndex === -1) {
+      for (let i = 0; i < winningConditions.length; i++) {
+        const [a, b, c] = winningConditions[i];
+
+        if (board[a] === 'O' && board[b] === 'O' && board[c] === '') aiIndex = c;
+        else if (board[a] === 'O' && board[b] === '' && board[c] === 'O') aiIndex = b;
+        else if (board[a] === '' && board[b] === 'O' && board[c] === 'O') aiIndex = a;
+
+        if (aiIndex !== -1) break;
+      }
+    }
+
+    // 3. Otherwise pick first empty cell
+    if (aiIndex === -1) {
+      for (let i = 0; i < board.length; i++) {
+        if (board[i] === '') {
+          aiIndex = i;
+          break;
+        }
+      }
+    }
+
+    const cell = cells[aiIndex];
+    handleCellPlayed(cell, aiIndex);
+    handleResultValidation();
   }
 
-  // Function to restart the game
+  // When player clicks a cell
+  function handleCellClick(event) {
+    const clickedCell = event.target;
+    const clickedIndex = parseInt(clickedCell.getAttribute('data-index'));
+
+    if (board[clickedIndex] !== '' || !isGameActive) return;
+
+    clickSound.play();
+    handleCellPlayed(clickedCell, clickedIndex);
+    handleResultValidation();
+
+    // Trigger AI move
+    if (isGameActive) {
+      setTimeout(aiMove, 300);
+    }
+  }
+
+  // Restart game
   function handleRestartGame() {
-    // Reset everything to starting state
     board = ['', '', '', '', '', '', '', '', ''];
     isGameActive = true;
     currentPlayer = 'O';
     status.textContent = `Player ${currentPlayer}'s turn`;
 
-    // Show board again and remove animations
     const boardElement = document.getElementById('board');
     const winnerMessage = document.getElementById('winnerMessage');
     boardElement.style.display = 'grid';
@@ -121,18 +159,15 @@ document.addEventListener('DOMContentLoaded', () => {
     winnerMessage.textContent = '';
     winnerMessage.classList.remove('fade-in');
 
-    // Clear all cells
     cells.forEach(cell => {
       cell.textContent = '';
       cell.classList.remove('disabled');
     });
   }
 
-  // Add event listeners to every cell for clicking
+  // Add event listeners
   cells.forEach(cell => cell.addEventListener('click', handleCellClick));
-  // Add event listener to restart button
   restartButton.addEventListener('click', handleRestartGame);
 
-  // Show initial message at game start
   status.textContent = `Player ${currentPlayer}'s turn`;
 });
